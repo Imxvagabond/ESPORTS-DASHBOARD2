@@ -3,59 +3,125 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Live Gaming Streams</title>
-
   <script src="https://embed.twitch.tv/embed/v1.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+ *{
+    margin: 0;
+    padding:0;
+  
+ }
+    body {
+    background-image: url(https://wallpapers.com/images/hd/colorful-gaming-1920-x-1080-bwv9cqnsk19pqlg1.jpg);
+    overflow: auto;
+    flex-wrap: wrap;
+     font-family: Arial;
+     background: rgb(6, 6, 6);
+     
+      }
 
-</head>
+    h1 { 
+    text-align:center;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+     }
 
-<style>
-body{
-background-image: url(https://wallpapers.com/images/hd/red-gaming-background-wo9fi49j17dpth5t.jpg);
-
-
+    .stream { 
+    margin-bottom: 30px;
+     }
+     #streams{
+       margin-top: 80px;
+    background-image: url(https://wallpapers.com/images/hd/red-gaming-background-wo9fi49j17dpth5t.jpg);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px; 
+    
+   
+     }
+     #streams div{
+         
+        height: 200px;
+        width: 300px;
+        margin: 20px;
+        border: 1px solid white;
+        
+     }
+     #streams div:hover{
+      scale: 1.05;
+      cursor: pointer;
+     }
+    .stream {
+        gap: 20px;
+  max-width: 800px; 
+  height: 450px; 
 }
-h1{
-color: aliceblue;
-font-size: 2.5rem;
+header{
+    color: white;
+    font-size: 1.5rem;
+    background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVDXaR3_5PwWznhuBycU06zA4u_52g36zA-g&s);
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
 }
 #chrt{
-background-color: rgb(179, 2, 2);
+background-color: rgb(173, 4, 4);
 box-shadow: 1px 1px 1px grey;
 height: 40px;
 width: 120px;
 border-radius: 10px;
-position: absolute;
-top: 24px;
-left:1170px;
+position: relative;
+top: 0px;
+left:320px;
 }
 a{
 color: white;
-font-size: 1.2rem;
+font-size: 1.1rem;
 text-decoration: none;
 }
-</style>
+#home{
+background-color: rgb(154, 2, 2);
+box-shadow: 1px 1px 1px grey;
+height: 40px;
+width: 120px;
+border-radius: 10px;
+position: relative;
+top: 0px;
+left:-280px;
+}
 
-
-
+  </style>
+</head>
 <body>
+
+  <header>
+    <button id="home"> <a href="index.html">Home</a> </button>
+    <h1>Live  Streamings</h1>
     
+    <button id="chrt"> <a href="chartt.html"> Live Charts</a> </button>
+  </header>
+  <div id="streams">
+    
+  </div>
 
-<h1 style="text-align:center">Live Stream Viewers</h1>
-<button id="chrt"> <a href="streamm.html"> Live Stream</a> </button>
+  <canvas id="StrmChart"></canvas>
 
-<canvas id="strmChart"></canvas>
+
+
+
+
 
 
 <script>
 
-let labels = [];
-let dataa = [];
+
+
+
 
 const CLIENT_ID = "bo071zn1enc3ddqpxo6sphg6eg2fqg";
 const CLIENT_SECRET = "18j8a5b3pn9n45qogv2ysyrj0fkiuh";
+
 
 async function getToken() {
   const url = `https://id.twitch.tv/oauth2/token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&grant_type=client_credentials`;
@@ -64,43 +130,46 @@ async function getToken() {
   return data.access_token;
 }
 
+
 async function fetchStreams() {
   const token = await getToken();
-
   const res = await fetch("https://api.twitch.tv/helix/streams", {
-    headers: { "Client-ID": CLIENT_ID, "Authorization": `Bearer ${token}` }
-  });
-
-  const data = await res.json();
-
-  data.data.forEach(stream => {
-    labels.push(stream.game_name);
-    dataa.push(stream.viewer_count);
-
-    console.log("Game:", stream.game_name);
-    console.log("Viewers:", stream.viewer_count);
-  });
-
-  generateChart();
-}
-
-function generateChart() {
-  const mychart = document.getElementById("strmChart");
-
-  new Chart(mychart, {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [{
-        label: "Live Viewers",
-        data: dataa,
-        borderWidth: 2,
-        backgroundColor: "black",
-        borderColor:"red"
-      }]
+    headers: {
+      "Client-ID": CLIENT_ID,
+      "Authorization": `Bearer ${token}`
     }
   });
+  const data = await res.json();
+  const container = document.getElementById("streams");
+  container.innerHTML = "";
+
+  data.data.forEach(stream => {
+    const div = document.createElement("div");
+    div.className = "stream";
+    console.log(stream)
+    console.log(`Channel: ${stream.user_name}, Viewers: ${stream.viewer_count}`)
+    div.id = `twitch-${stream.user_login}`;
+    
+
+
+
+
+    container.appendChild(div);
+
+    new Twitch.Embed(div.id, {
+  width: div.offsetWidth,
+  height: div.offsetHeight,
+  channel: stream.user_login,
+  parent: ["localhost"]// change to your domain if deployed
+    });
+  });
 }
+
+
+
+
+
+
 
 fetchStreams();
 </script>
