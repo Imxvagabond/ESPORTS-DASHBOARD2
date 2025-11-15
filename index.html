@@ -9,8 +9,31 @@
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
+<style>
+
+#chr{
+margin-top: 20px;
+background-color: rgb(173, 4, 4);
+box-shadow: 1px 1px 1px grey;
+height: 40px;
+width: 120px;
+border-radius: 10px;
+position: relative;
+top: 0px;
+left:1170px;
+}
+a{
+color: white;
+font-size: 1.2rem;
+text-decoration: none;
+}
+</style>
 <body>
     <!-- <button id="goLiveBtn" class="go-live-btn">Go Live</button> -->
+
+
+    
+    <button id="chr"><a href="stream.html">Live Stream</a></button>
 
     <div class="container" id="root">
         <button id="hamburgerBtn" class="hamburger" aria-label="Open menu" aria-expanded="false">
@@ -59,7 +82,7 @@
     </div>
     
     <!-- Load our scripts -->
-    <script src="charts.js"></script>
+    <script src="chart.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
